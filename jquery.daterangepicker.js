@@ -5,44 +5,10 @@
 // license : MIT
 // www.jszen.com
 
-(function($)
+(function($, moment)
 {
-
-	$.dateRangePickerLanguages =
-	{
-		'cn':
-		{
-			'selected': '已选择:',
-			'day':'天',
-			'days': '天',
-			'apply': '确定',
-			'week-1' : '一',
-			'week-2' : '二',
-			'week-3' : '三',
-			'week-4' : '四',
-			'week-5' : '五',
-			'week-6' : '六',
-			'week-7' : '日',
-			'month-name': ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
-			'shortcuts' : '快捷选择',
-			'past': '过去',
-			'following':'将来',
-			'previous' : '&nbsp;&nbsp;&nbsp;',
-			'prev-week' : '上周',
-			'prev-month' : '上个月',
-			'prev-year' : '去年',
-			'next': '&nbsp;&nbsp;&nbsp;',
-			'next-week':'下周',
-			'next-month':'下个月',
-			'next-year':'明年',
-			'less-than' : '所选日期范围不能大于%d天',
-			'more-than' : '所选日期范围不能小于%d天',
-			'default-more' : '请选择大于%d天的日期范围',
-			'default-less' : '请选择小于%d天的日期范围',
-			'default-range' : '请选择%d天到%d天的日期范围',
-			'default-single':'请选择一个日期',
-			'default-default': '请选择一个日期范围'
-		},
+	// Default is english, you can change this if you want to
+	$.dateRangePickerLanguages = $.dateRangePickerLanguages || {
 		'en':
 		{
 			'selected': 'Selected:',
@@ -79,7 +45,7 @@
 	};
 
 
-	if (window['moment'] === undefined)
+	if (moment === undefined)
 	{
 		if (window['console'] && console['warn']) console.warn('Please import moment.js before daterangepicker.js');
 		return;
@@ -123,7 +89,7 @@
 			container:'body',
 			alwaysOpen:false,
 			singleDate:false,
-			batchMode: false 
+			batchMode: false
 		},opt);
 
 		opt.start = false;
@@ -175,7 +141,7 @@
 				$(document).unbind('click.datepicker',closeDatePicker);
 			}
 		});
-		
+
 		$(window).bind('resize.datepicker',calcPosition);
 
 		return this;
@@ -202,7 +168,7 @@
 			$(this).data('date-picker-opened',true);
 
 
-			
+
 
 
 			box = createDom().hide();
@@ -242,7 +208,7 @@
 
 			//showSelectedInfo();
 
-			
+
 
 
 			var defaultTopText = '';
@@ -260,7 +226,7 @@
 			box.find('.default-top').html( defaultTopText.replace(/\%d/,opt.minDays).replace(/\%d/,opt.maxDays));
 
 
-			
+
 
 			setTimeout(function()
 			{
@@ -468,7 +434,7 @@
 					defaults[0] = defaults[0].replace(/(\d+)(th|nd|st)/,'$1');
 					defaults[1] = defaults[1].replace(/(\d+)(th|nd|st)/,'$1');
 				}
-        // set initiated  to avoid triggerring datepicker-change event 
+        // set initiated  to avoid triggerring datepicker-change event
         initiated = false;
 				setDateRange(moment(defaults[0], ___format).toDate(),moment(defaults[1], ___format).toDate());
         initiated = true;
@@ -1017,7 +983,7 @@
 			return $(html);
 		}
 
-		function getHideClass() 
+		function getHideClass()
 		{
 			if (opt.autoClose === true) {
 				return 'hide';
@@ -1157,4 +1123,4 @@
 
 
 	};
-})(jQuery);
+})(jQuery, moment);
