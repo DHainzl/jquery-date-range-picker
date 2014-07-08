@@ -7,21 +7,20 @@
 
 (function($, moment)
 {
+	if (moment === undefined)
+	{
+		if (window['console'] && console['warn']) console.warn('Please import moment.js before daterangepicker.js');
+		return;
+	}
+
 	$.dateRangePickerLanguages = $.dateRangePickerLanguages || {};
 	// Default is english
+	// Let moment create the dates automatically
 	$.dateRangePickerLanguages['en'] = {
 		'selected': 'Selected:',
 		'day':'Day',
 		'days': 'Days',
 		'apply': 'Close',
-		'week-1' : 'MO',
-		'week-2' : 'TU',
-		'week-3' : 'WE',
-		'week-4' : 'TH',
-		'week-5' : 'FR',
-		'week-6' : 'SA',
-		'week-7' : 'SU',
-		'month-name': ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'],
 		'shortcuts' : 'Shortcuts',
 		'past': 'Past',
 		'following':'Following',
@@ -42,13 +41,6 @@
 		'default-default': 'Please select a date range'
 	};
 
-
-	if (moment === undefined)
-	{
-		if (window['console'] && console['warn']) console.warn('Please import moment.js before daterangepicker.js');
-		return;
-	}
-
 	$.fn.dateRangePicker = function(opt)
 	{
 		if (!opt) opt = {};
@@ -57,7 +49,7 @@
 			autoClose: false,
 			format: 'YYYY-MM-DD',
 			separator: ' to ',
-			language: 'auto',
+			language: 'moment',
 			startOfWeek: 'sunday',// or monday
 			getValue: function()
 			{
@@ -96,7 +88,8 @@
 		if (opt.startDate && typeof opt.startDate == 'string') opt.startDate = moment(opt.startDate,opt.format).toDate();
 		if (opt.endDate && typeof opt.endDate == 'string') opt.endDate = moment(opt.endDate,opt.format).toDate();
 
-		var langs = getLanguages();
+		var langs = getLanguages(),
+			loadedLang;
 		var box;
 		var initiated = false;
 		var self = this;
@@ -1090,29 +1083,47 @@
 
 		function getLanguages()
 		{
-			if (opt.language == 'auto')
-			{
-				var language = navigator.language ? navigator.language : navigator.browserLanguage;
-				if (!language) return $.dateRangePickerLanguages['en'];
-				var language = language.substr(0, 2).toLowerCase();
+			var desiredLanguage = opt.language;
 
-				if ($.dateRangePickerLanguages[language]) {
-					return $.extend (true, {}, $.dateRangePickerLanguages['en'], $.dateRangePickerLanguages[language]);
-				}
-				return $.dateRangePickerLanguages['en'];
+			if (desiredLanguage == 'moment') {
+				desiredLanguage = moment.lang();
+			} else if (desiredLanguage == 'auto') {
+				var desiredLanguage = navigator.language ? navigator.language : navigator.browserLanguage;
+				if (language)
+					desiredLanguage = desiredLanguage.substr(0, 2).toLowerCase();
 			}
-			else if ( opt.language && opt.language in $.dateRangePickerLanguages)
+
+			if (desiredLanguage && desiredLanguage in $.dateRangePickerLanguages)
 			{
-				return $.extend (true, {}, $.dateRangePickerLanguages['en'], $.dateRangePickerLanguages[opt.language]);
+				loadedLang = desiredLanguage;
+				return $.extend (true, {}, $.dateRangePickerLanguages['en'], $.dateRangePickerLanguages[desiredLanguage]);
 			}
 			else
 			{
+				loadedLang = 'en';
 				return $.dateRangePickerLanguages['en'];
 			}
 		}
 
 		function lang(t)
 		{
+			function getFromMoment(func, param) {
+				var origLang = moment.lang();
+				moment.lang(loadedLang);
+				var returnValue = moment[func](param);
+				moment.lang(origLang);
+				return returnValue;
+			};
+
+			// Let moment determine the month-names and weekday names automatically
+			if (t == 'month-name') {
+				return getFromMoment ('months');
+			} else if (t.indexOf('week-') == 0) {
+				var idx = parseInt(t.substr(5), 10);
+				if (idx == 7) return getFromMoment('weekdaysMin', 0);
+				return getFromMoment('weekdaysMin', idx);
+			}
+
 			return (t in langs)? langs[t] : t;
 		}
 

@@ -42,7 +42,7 @@
 	color:#666;
 	font-weight:700;
 }
-.date-picker-wrapper a 
+.date-picker-wrapper a
 {
 	color: rgb(107, 180, 214);
 	text-decoration:underline;
@@ -95,12 +95,14 @@
 {
 	background-color: rgb(156, 219, 247);
 }
+
 .date-picker-wrapper .month-wrapper table .week-name
 {
 	height:20px;
 	line-height:20px;
 	font-weight:100;
 }
+.date-picker-wrapper .month-wrapper table .week-name th { text-transform: uppercase; }
 
 .date-picker-wrapper .month-wrapper table .day.has-tooltip { cursor:help !important;}
 
@@ -130,6 +132,7 @@
 	background-color:#ccc;
 	color:white;
 }
+.date-picker-wrapper table .caption .month-name { text-transform: uppercase; }
 .date-picker-wrapper .gap
 {
 	position:absolute;
@@ -174,14 +177,14 @@
 .date-picker-wrapper .drp_top-bar .apply-btn
 {
 	position:absolute;
-	right: 0px; 
+	right: 0px;
 	top: 6px;
 	padding:3px 5px;
 	margin:0;
 	font-size:12px;
 	border-radius:4px;
 	cursor:pointer;
-	
+
 	color: #d9eef7;
 	border: solid 1px #0076a3;
 	background: #0095cd;
@@ -217,7 +220,7 @@
 	float: left;
 }
 .time2 {
-	float: right;	
+	float: right;
 }
 .hour, .minute {
 	text-align: right;
